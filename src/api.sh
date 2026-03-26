@@ -10,10 +10,17 @@ fetch_usage_data() {
     command -v curl >/dev/null 2>&1 || return 0
 
     local cache_dir="/tmp/claude-statusline"
-    local cache_file="${cache_dir}/cache-${UID:-$(id -u)}.json"
     local cache_max_age=60
 
     mkdir -p "$cache_dir"
+
+    # Fetch token first so we can key the cache per account
+    local token
+    token=$(get_oauth_token)
+
+    local token_key
+    token_key=$(printf '%s' "$token" | cksum | cut -d' ' -f1)
+    local cache_file="${cache_dir}/cache-${UID:-$(id -u)}-${token_key}.json"
 
     # Check cache freshness
     if [ -f "$cache_file" ]; then
@@ -26,10 +33,7 @@ fetch_usage_data() {
             return 0
         fi
     fi
-
     # Fetch fresh data
-    local token
-    token=$(get_oauth_token)
     if [ -n "$token" ] && [ "$token" != "null" ]; then
         local response
         response=$(curl -s --max-time 5 \
