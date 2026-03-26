@@ -20,7 +20,7 @@ Works on macOS and Linux, with or without Oh My Zsh.
 With npm:
 
 ```
-npx @notsuhas/claude-statusline
+npx @notsuhas/claude-statusline@latest
 ```
 
 Without npm:
@@ -34,7 +34,7 @@ Restart Claude Code after installing.
 ## Uninstall
 
 ```
-npx @notsuhas/claude-statusline --uninstall
+npx @notsuhas/claude-statusline@latest --uninstall
 ```
 
 Or:
