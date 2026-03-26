@@ -97,7 +97,12 @@ function uninstall() {
         warn("No statusline found — nothing to remove");
     }
 
-    if (fs.existsSync(SETTINGS_FILE)) {
+    const settingsBackup = SETTINGS_FILE + ".bak";
+    if (fs.existsSync(settingsBackup)) {
+        fs.copyFileSync(settingsBackup, SETTINGS_FILE);
+        fs.unlinkSync(settingsBackup);
+        success(`Restored previous settings.json from ${dim}settings.json.bak${reset}`);
+    } else if (fs.existsSync(SETTINGS_FILE)) {
         try {
             const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, "utf-8"));
             if (settings.statusLine) {
@@ -155,6 +160,10 @@ function install() {
         } catch {
             fail(`Could not parse ${SETTINGS_FILE} — fix it manually`);
             process.exit(1);
+        }
+        if (settings.statusLine) {
+            fs.copyFileSync(SETTINGS_FILE, SETTINGS_FILE + ".bak");
+            warn(`Backed up settings.json to ${dim}settings.json.bak${reset}`);
         }
     }
 

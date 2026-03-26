@@ -37,7 +37,7 @@ if [ -n "$session_start" ] && [ "$session_start" != "null" ]; then
     fi
 else
     # Fallback: track session via temp file keyed to parent PID
-    session_file="/tmp/claude-statusline-session-$$"
+    session_file="/tmp/claude-statusline-session-$PPID"
     if [ ! -f "$session_file" ]; then
         date +%s > "$session_file"
     fi

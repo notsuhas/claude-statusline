@@ -9,8 +9,8 @@ fetch_usage_data() {
 
     command -v curl >/dev/null 2>&1 || return 0
 
-    local cache_dir="/tmp/claude"
-    local cache_file="${cache_dir}/statusline-usage-cache.json"
+    local cache_dir="/tmp/claude-statusline"
+    local cache_file="${cache_dir}/cache-${UID:-$(id -u)}.json"
     local cache_max_age=60
 
     mkdir -p "$cache_dir"

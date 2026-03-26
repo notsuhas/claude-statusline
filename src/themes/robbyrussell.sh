@@ -21,13 +21,13 @@ theme_robbyrussell() {
     # Cyan directory
     line1+="  \033[0;36m${CURRENT_DIR}\033[0m"
 
-    # Git info
+    # Git info (green branch when clean, red when dirty)
     if [ -n "$GIT_BRANCH" ]; then
         if [ -n "$GIT_DIRTY" ]; then
             line1+=" \033[1;34mgit:(\033[0;31m${GIT_BRANCH}\033[1;34m)\033[0m"
             line1+=" \033[0;33m✗\033[0m"
         else
-            line1+=" \033[1;34mgit:(\033[0;31m${GIT_BRANCH}\033[1;34m)\033[0m"
+            line1+=" \033[1;34mgit:(\033[0;32m${GIT_BRANCH}\033[1;34m)\033[0m"
         fi
     fi
 

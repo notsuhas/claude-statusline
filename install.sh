@@ -82,7 +82,12 @@ uninstall() {
         warn "No statusline found — nothing to remove"
     fi
 
-    if [ -f "$SETTINGS_FILE" ]; then
+    local settings_backup="${SETTINGS_FILE}.bak"
+    if [ -f "$settings_backup" ]; then
+        cp "$settings_backup" "$SETTINGS_FILE"
+        rm "$settings_backup"
+        success "Restored previous settings.json from settings.json.bak"
+    elif [ -f "$SETTINGS_FILE" ]; then
         if command -v jq >/dev/null 2>&1; then
             local tmp="${SETTINGS_FILE}.tmp"
             jq 'del(.statusLine)' "$SETTINGS_FILE" > "$tmp" && mv "$tmp" "$SETTINGS_FILE"
@@ -133,9 +138,15 @@ install() {
     chmod +x "$STATUSLINE_DEST"
     success "Installed statusline to ${STATUSLINE_DEST}"
 
-    # Update settings.json
+    # Update settings.json (backup first if it has statusLine config)
     local target_cmd='bash "$HOME/.claude/statusline.sh"'
     if [ -f "$SETTINGS_FILE" ]; then
+        local has_statusline
+        has_statusline=$(jq -r '.statusLine // empty' "$SETTINGS_FILE" 2>/dev/null)
+        if [ -n "$has_statusline" ]; then
+            cp "$SETTINGS_FILE" "${SETTINGS_FILE}.bak"
+            warn "Backed up settings.json to settings.json.bak"
+        fi
         local current_cmd
         current_cmd=$(jq -r '.statusLine.command // ""' "$SETTINGS_FILE" 2>/dev/null)
         if [ "$current_cmd" = "$target_cmd" ]; then
