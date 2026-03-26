@@ -1,6 +1,6 @@
 {
   "name": "@notsuhas/claude-statusline",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Robbyrussell-themed status line for Claude Code with rate limits, session time, and git info",
   "bin": {
     "claude-statusline": "./bin/install.js"
