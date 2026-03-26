@@ -8,12 +8,30 @@
   "scripts": {
     "prepare": "bash bin/build.sh"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notsuhas/claude-statusline.git"
+  },
+  "homepage": "https://github.com/notsuhas/claude-statusline#readme",
+  "bugs": {
+    "url": "https://github.com/notsuhas/claude-statusline/issues"
+  },
+  "files": [
+    "bin/",
+    "dist/",
+    "src/",
+    "install.sh",
+    "LICENSE",
+    "README.md"
+  ],
   "keywords": [
     "claude",
     "claude-code",
     "statusline",
     "robbyrussell",
-    "cli"
+    "cli",
+    "terminal",
+    "rate-limits"
   ],
   "license": "MIT",
   "author": "Suhas"
