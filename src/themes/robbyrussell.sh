@@ -55,21 +55,25 @@ theme_robbyrussell() {
         local bar_width=10
 
         # 5-hour usage
-        local five_pct five_bar five_color five_fmt
+        local five_pct five_bar five_color five_fmt five_reset five_reset_str
         five_pct=$(printf '%s' "$USAGE_DATA" | jq -r '.five_hour.utilization // 0' | awk '{printf "%.0f", $1}')
         five_bar=$(build_bar "$five_pct" "$bar_width")
         five_color=$(color_for_pct "$five_pct")
         five_fmt=$(printf '%3d' "$five_pct")
+        five_reset=$(printf '%s' "$USAGE_DATA" | jq -r '.five_hour.resets_at // empty')
+        five_reset_str=$(format_reset_time "$five_reset")
 
         # 7-day usage
-        local seven_pct seven_bar seven_color seven_fmt
+        local seven_pct seven_bar seven_color seven_fmt seven_reset seven_reset_str
         seven_pct=$(printf '%s' "$USAGE_DATA" | jq -r '.seven_day.utilization // 0' | awk '{printf "%.0f", $1}')
         seven_bar=$(build_bar "$seven_pct" "$bar_width")
         seven_color=$(color_for_pct "$seven_pct")
         seven_fmt=$(printf '%3d' "$seven_pct")
+        seven_reset=$(printf '%s' "$USAGE_DATA" | jq -r '.seven_day.resets_at // empty')
+        seven_reset_str=$(format_reset_time "$seven_reset")
 
-        printf '\n  %b %b%s%%%b (5h)  %b %b%s%%%b (7d)' \
-            "$five_bar" "$five_color" "$five_fmt" "$RESET" \
-            "$seven_bar" "$seven_color" "$seven_fmt" "$RESET"
+        printf '\n  %b %b%s%%%b (5h%s)  %b %b%s%%%b (7d%s)' \
+            "$five_bar" "$five_color" "$five_fmt" "$RESET" "$five_reset_str" \
+            "$seven_bar" "$seven_color" "$seven_fmt" "$RESET" "$seven_reset_str"
     fi
 }

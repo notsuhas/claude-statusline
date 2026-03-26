@@ -57,3 +57,49 @@ format_duration() {
         printf '%ds' "$elapsed"
     fi
 }
+
+# Formats an ISO 8601 reset timestamp into a countdown string: " ↻ 2h13m"
+# Returns empty string if the timestamp is missing or in the past.
+# Usage: str=$(format_reset_time "2026-03-26T07:00:00.599573+00:00")
+format_reset_time() {
+    local reset_ts=$1
+    [ -z "$reset_ts" ] && return 0
+
+    local reset_epoch now_epoch
+    # Try GNU date first
+    reset_epoch=$(date -d "$reset_ts" +%s 2>/dev/null)
+    if [ -z "$reset_epoch" ]; then
+        # BSD date: strip fractional seconds, keep datetime and tz separate
+        local dt="${reset_ts%%.*}"     # "2026-03-26T07:00:00"
+        local tz=""
+        # Extract tz from original (after fractional seconds or directly after time)
+        case "$reset_ts" in
+            *Z|*z) ;; # UTC, handled by TZ=UTC fallback
+            *+[0-9][0-9]:[0-9][0-9]) tz="+${reset_ts##*+}" ;;
+            *-[0-9][0-9]:[0-9][0-9])
+                # Distinguish negative tz from date hyphens: tz is the last -HH:MM
+                tz=$(printf '%s' "$reset_ts" | grep -o '[-][0-9][0-9]:[0-9][0-9]$')
+                ;;
+        esac
+        # Remove any tz suffix that leaked into dt
+        dt="${dt%%+*}"
+        dt="${dt%%Z*}"
+        if [ -n "$tz" ]; then
+            local tz_compact
+            tz_compact=$(printf '%s' "$tz" | tr -d ':')
+            reset_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%S%z" "${dt}${tz_compact}" +%s 2>/dev/null)
+        fi
+        # Fallback: assume UTC
+        if [ -z "$reset_epoch" ]; then
+            reset_epoch=$(TZ=UTC date -j -f "%Y-%m-%dT%H:%M:%S" "$dt" +%s 2>/dev/null)
+        fi
+    fi
+
+    [ -z "$reset_epoch" ] && return 0
+
+    now_epoch=$(date +%s)
+    local remaining=$(( reset_epoch - now_epoch ))
+    [ "$remaining" -le 0 ] && return 0
+
+    printf ' ↻ %s' "$(format_duration "$remaining")"
+}
