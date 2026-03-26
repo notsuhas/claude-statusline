@@ -6,7 +6,9 @@
     "claude-statusline": "./bin/install.js"
   },
   "scripts": {
-    "prepublishOnly": "bash bin/build.sh"
+    "prepublishOnly": "bash bin/build.sh",
+    "version": "git add -A",
+    "postversion": "git push origin main --follow-tags"
   },
   "repository": {
     "type": "git",
