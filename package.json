@@ -1,0 +1,20 @@
+{
+  "name": "@notsuhas/claude-statusline",
+  "version": "1.0.0",
+  "description": "Robbyrussell-themed status line for Claude Code with rate limits, session time, and git info",
+  "bin": {
+    "claude-statusline": "./bin/install.js"
+  },
+  "scripts": {
+    "prepare": "bash bin/build.sh"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "statusline",
+    "robbyrussell",
+    "cli"
+  ],
+  "license": "MIT",
+  "author": "Suhas"
+}
